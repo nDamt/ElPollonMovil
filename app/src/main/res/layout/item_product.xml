@@ -1,0 +1,55 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/producto_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/product_image_desc"
+            android:src="@drawable/ic_producto" />
+
+        <TextView
+            android:id="@+id/producto_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/producto_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="Lorem Ipsum"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/producto_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"
+            android:text="S/. 76"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/add_to_cart_button"
+            android:layout_width="wrap_content"
+            android:layout_height="51dp"
+            android:layout_below="@id/product_price"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:alpha="@dimen/material_emphasis_medium"
+            android:contentDescription="@string/add_to_cart_desc"
+            android:src="@drawable/ic_add" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
