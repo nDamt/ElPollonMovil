@@ -40,6 +40,9 @@ dependencies {
     // Ejemplo de dependencia específica de Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation ("com.google.firebase:firebase-database:20.3.0")
+    implementation ("com.google.firebase:firebase-common:20.4.2")
+
 
     //api retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")

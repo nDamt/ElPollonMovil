@@ -1,8 +1,7 @@
 package com.example.examenfinal
 
-class Cart private constructor() {
-    private val cartItems: MutableList<Product> =
-        ArrayList()
+object Cart {
+    private val cartItems = mutableListOf<Product>()
 
     fun addItem(product: Product) {
         cartItems.add(product)
@@ -14,17 +13,5 @@ class Cart private constructor() {
 
     fun clearCart() {
         cartItems.clear()
-    }
-
-    companion object {
-        @JvmStatic
-        var instance: Cart? = null
-            get() {
-                if (field == null) {
-                    field = Cart()
-                }
-                return field
-            }
-            private set
     }
 }

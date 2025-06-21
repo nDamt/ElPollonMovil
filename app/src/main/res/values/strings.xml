@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">ExamenFInal</string>
+    <string name="logo_desc">Logo de Cafeteria</string>
+
+    <string name="profile_image_desc">Profile Image</string>
+
+    <string name="product_image_desc">Product Image</string>
+    <string name="add_to_cart_desc">Add to Cart</string>
+    <string name="background_desc">Background Image</string>
+    <string name="delete_product_desc">Delete Product</string>
+
+    <string-array name="numero_personas">
+        <item>1 Persona</item>
+        <item>2 Personas</item>
+        <item>3 Personas</item>
+        <item>4 Personas</item>
+        <item>5 Personas</item>
+        <item>6 Personas</item>
+        <item>7 Personas</item>
+        <item>8 Personas</item>
+        <item>9 Personas</item>
+        <item>10 Personas</item>
+        <item>11 Personas</item>
+    </string-array>
 </resources>

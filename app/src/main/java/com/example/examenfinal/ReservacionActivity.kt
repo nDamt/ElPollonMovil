@@ -1,0 +1,101 @@
+package com.example.examenfinal
+
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.content.Intent
+import android.os.Bundle
+import android.text.TextUtils
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.*
+
+class ReservacionActivity : AppCompatActivity() {
+
+    private lateinit var etNombre: EditText
+    private lateinit var etFecha: EditText
+    private lateinit var etHora: EditText
+    private lateinit var etNotas: EditText
+    private lateinit var spPersonas: Spinner
+    private lateinit var btnFecha: Button
+    private lateinit var btnHora: Button
+    private lateinit var btnConfirmar: Button
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_reservacion)
+
+        etNombre = findViewById(R.id.et_nombre)
+        etFecha = findViewById(R.id.et_fecha)
+        etHora = findViewById(R.id.et_hora)
+        etNotas = findViewById(R.id.et_notas)
+        spPersonas = findViewById(R.id.sp_personas)
+        btnFecha = findViewById(R.id.btn_fecha)
+        btnHora = findViewById(R.id.btn_hora)
+        btnConfirmar = findViewById(R.id.btn_confirmar)
+
+        btnFecha.setOnClickListener { showDatePickerDialog() }
+        btnHora.setOnClickListener { showTimePickerDialog() }
+        btnConfirmar.setOnClickListener { confirmarReservacion() }
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.selectedItemId = R.id.nav_reservacion
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    true
+                }
+                R.id.nav_cart -> {
+                    startActivity(Intent(this, CartActivity::class.java))
+                    true
+                }
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    true
+                }
+                R.id.nav_reservacion -> true // ya estamos aquí
+                else -> false
+            }
+        }
+    }
+
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(this, { _, y, m, d ->
+            etFecha.setText(String.format("%02d/%02d/%04d", d, m + 1, y))
+        }, year, month, day)
+        datePickerDialog.show()
+    }
+
+    private fun showTimePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val timePickerDialog = TimePickerDialog(this, { _, h, m ->
+            etHora.setText(String.format("%02d:%02d", h, m))
+        }, hour, minute, true)
+        timePickerDialog.show()
+    }
+
+    private fun confirmarReservacion() {
+        val nombre = etNombre.text.toString().trim()
+        val fecha = etFecha.text.toString().trim()
+        val hora = etHora.text.toString().trim()
+        val personas = spPersonas.selectedItem?.toString()?.trim() ?: ""
+        val notas = etNotas.text.toString().trim()
+
+        if (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(hora) || TextUtils.isEmpty(personas)) {
+            Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
+        } else {
+            // Aquí puedes agregar lógica para guardar la reservación
+            Toast.makeText(this, "Reservación exitosa", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
