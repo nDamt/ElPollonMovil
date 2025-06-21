@@ -17,7 +17,7 @@
             android:layout_height="80dp"
             android:layout_centerHorizontal="true"
             android:contentDescription="@string/product_image_desc"
-            android:src="@drawable/ic_producto" />
+            android:src="@drawable/ic_product" />
 
         <TextView
             android:id="@+id/producto_name"
