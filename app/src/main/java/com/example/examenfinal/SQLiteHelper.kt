@@ -14,7 +14,8 @@ class SQLiteHelper(context: Context) :
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT,
                 precio REAL,
-                categoria TEXT
+                categoria TEXT,
+                imagen INTEGER
             )
         """
         db.execSQL(createTable)
@@ -25,12 +26,13 @@ class SQLiteHelper(context: Context) :
         onCreate(db)
     }
 
-    fun insertarProducto(nombre: String, precio: Double, categoria: String): Long {
+    fun insertarProducto(nombre: String, precio: Double, categoria: String, imagen: Int): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put("nombre", nombre)
             put("precio", precio)
             put("categoria", categoria)
+            put("imagen", imagen)
         }
         return db.insert("productos", null, values)
     }
@@ -45,7 +47,8 @@ class SQLiteHelper(context: Context) :
                 val nombre = cursor.getString(cursor.getColumnIndexOrThrow("nombre"))
                 val precio = cursor.getDouble(cursor.getColumnIndexOrThrow("precio"))
                 val categoria = cursor.getString(cursor.getColumnIndexOrThrow("categoria"))
-                lista.add(Product(nombre, precio, R.drawable.ic_product, categoria))
+                val imagen = cursor.getInt(cursor.getColumnIndexOrThrow("imagen"))
+                lista.add(Product(nombre, precio, imagen, categoria))
             } while (cursor.moveToNext())
         }
 

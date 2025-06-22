@@ -10,7 +10,7 @@
         android:id="@+id/backgroundImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.5"
+        android:alpha="1.0"
         android:scaleType="centerCrop"
         android:src="@drawable/background"
         android:contentDescription="@string/background_desc" />

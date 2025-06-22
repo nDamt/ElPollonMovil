@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var searchView: SearchView
     private lateinit var btnBrasas: Button
     private lateinit var btnParrillas: Button
-    private lateinit var btnPostres: Button
+    private lateinit var btnBebidas: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,74 +34,74 @@ class MainActivity : AppCompatActivity() {
         searchView = findViewById(R.id.search_view)
         btnBrasas = findViewById(R.id.btn_brasas)
         btnParrillas = findViewById(R.id.btn_parrillas)
-        btnPostres = findViewById(R.id.btn_postres)
+        btnBebidas = findViewById(R.id.btn_bebidas)
 
         val sharedPreferences: SharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         val username = sharedPreferences.getString("username", "N/A")
         profileName.text = username
-        profileSubtitle.text = "Bienvenid@ a Cafeteria Fito Espinoza"
+        profileSubtitle.text = "Bienvenid@ a El Pollón"
 
-        // ✅ Inicializar y poblar SQLite
+        // ✅ Inicializar SQLiteHelper
         val dbHelper = SQLiteHelper(this)
 
-        // ✅ Solo insertar si aún no hay datos
+        // ✅ Insertar datos solo si la tabla está vacía
         if (dbHelper.obtenerProductos().isEmpty()) {
-            val productos = listOf(
+            val bebidas = listOf(
                 Product("Café Espresso", 7.00, R.drawable.ic_product, "Bebidas"),
                 Product("Café Americano", 8.00, R.drawable.ic_product, "Bebidas"),
-                Product("Café Cortado", 9.00, R.drawable.ic_product, "Bebidas"),
-                Product("Café Latte", 11.00, R.drawable.ic_product, "Bebidas"),
-                Product("Infusiones", 7.00, R.drawable.ic_product, "Bebidas"),
+                Product("Café Latte", 9.50, R.drawable.ic_product, "Bebidas"),
+                Product("Infusión de Manzanilla", 6.00, R.drawable.ic_product, "Bebidas"),
                 Product("Limonada Frozen", 12.00, R.drawable.frio, "Bebidas"),
-                Product("Coca-Cola personal", 5.00, R.drawable.frio, "Bebidas"),
-                Product("Gasificado de Maracuyá", 5.00, R.drawable.frio, "Bebidas"),
-                Product("Smoothie", 7.5, R.drawable.frio, "Bebidas"),
-                Product("Piña Colada sin Alcohol", 12.00, R.drawable.frio, "Bebidas"),
-                Product("Hamburguesa", 8.00, R.drawable.comida, "Platos"),
-                Product("Ensalada Cesar", 15.00, R.drawable.comida, "Platos"),
-                Product("Pizza", 12.00, R.drawable.comida, "Platos"),
-                Product("Pastas", 20.00, R.drawable.comida, "Platos"),
-                Product("Sandwich de pavo criollo", 20.00, R.drawable.comida, "Platos"),
-                Product("Provoleta", 38.00, R.drawable.comida, "Platos"),
-                Product("Sushi", 15.00, R.drawable.comida, "Platos"),
-                Product("Pollo Asado", 16.00, R.drawable.comida, "Platos"),
-                Product("Tagliatelle al pesto con milanesa de carne y queso parmesano", 18.00, R.drawable.comida, "Platos"),
-                Product("Filete de Res", 14.00, R.drawable.comida, "Platos"),
-                Product("Carrot Cake", 18.00, R.drawable.postre, "Postres"),
-                Product("Torta de Chocolate", 18.00, R.drawable.postre, "Postres"),
-                Product("Pie de Limón", 16.00, R.drawable.postre, "Postres"),
-                Product("Pie de Maracuyá", 16.00, R.drawable.postre, "Postres"),
-                Product("Crema Volteada", 16.00, R.drawable.postre, "Postres"),
-                Product("Cheesecake de Frutos Rojos", 18.00, R.drawable.postre, "Postres"),
-                Product("Helado(1 bola)", 12.00, R.drawable.postre, "Postres"),
-                Product("Helado(2 bola)", 16.00, R.drawable.postre, "Postres"),
-                Product("Cake de Naranja", 12.00, R.drawable.postre, "Postres"),
-                Product("Cake de Arandanos", 12.00, R.drawable.postre, "Postres")
+                Product("Coca-Cola", 5.00, R.drawable.frio, "Bebidas"),
+                Product("Agua Mineral", 4.00, R.drawable.frio, "Bebidas"),
+                Product("Smoothie de Fresa", 8.50, R.drawable.frio, "Bebidas"),
+                Product("Piña Colada sin Alcohol", 12.00, R.drawable.frio, "Bebidas")
             )
-            for (producto in productos) {
-                dbHelper.insertarProducto(producto.name, producto.price, producto.category)
+            val parrillas = listOf(
+                Product("Parrilla Mixta", 35.00, R.drawable.comida, "Parrillas"),
+                Product("Costillas BBQ", 32.00, R.drawable.comida, "Parrillas"),
+                Product("Chorizo Parrillero", 14.00, R.drawable.comida, "Parrillas"),
+                Product("Brochetas de Carne", 20.00, R.drawable.comida, "Parrillas"),
+                Product("Asado de Tira", 38.00, R.drawable.comida, "Parrillas")
+            )
+            val brasas = listOf(
+                Product("Pollo a la Brasa", 16.00, R.drawable.comida, "Brasas"),
+                Product("Anticuchos", 12.00, R.drawable.comida, "Brasas"),
+                Product("Alitas BBQ", 15.00, R.drawable.comida, "Brasas"),
+                Product("Sandwich de Lomo", 18.00, R.drawable.comida, "Brasas"),
+                Product("Papas Bravas", 9.00, R.drawable.comida, "Brasas")
+            )
+
+            val todosLosProductos = bebidas + parrillas + brasas
+            for (producto in todosLosProductos) {
+                dbHelper.insertarProducto(producto.name, producto.price, producto.category, producto.imageResource)
             }
         }
 
-        // ✅ Leer productos desde SQLite
+        // ✅ Obtener productos de la base de datos
         productList = dbHelper.obtenerProductos().toMutableList()
 
+        // ✅ Inicializar adaptador y RecyclerView
         productAdapter = ProductAdapter(this, productList)
         recyclerView.adapter = productAdapter
 
+        productAdapter.filterByCategory("Brasas")
+
+        // ✅ Búsqueda
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 productAdapter.filter(newText ?: "")
                 return true
             }
         })
 
+        // ✅ Botones de categoría
         btnBrasas.setOnClickListener { productAdapter.filterByCategory("Brasas") }
         btnParrillas.setOnClickListener { productAdapter.filterByCategory("Parrillas") }
-        btnPostres.setOnClickListener { productAdapter.filterByCategory("Postres") }
+        btnBebidas.setOnClickListener { productAdapter.filterByCategory("Bebidas") }
 
+        // ✅ Navegación inferior
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
