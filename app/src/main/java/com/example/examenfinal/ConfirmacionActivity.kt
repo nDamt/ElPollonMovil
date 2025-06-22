@@ -13,7 +13,7 @@ class ConfirmacionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirmacion)
 
-        backToCartButton = findViewById(R.id.back_to_cart_button)
+        backToCartButton = findViewById(R.id.button_volver_carrito)
 
         backToCartButton.setOnClickListener {
             val intent = Intent(this, CartActivity::class.java)
