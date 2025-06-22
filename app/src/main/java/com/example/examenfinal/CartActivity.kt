@@ -48,7 +48,7 @@ class CartActivity : AppCompatActivity() {
         val username = sharedPreferences.getString("username", "N/A")
 
         profileName.text = username
-        profileSubtitle.text = "Welcome a Cafetería Fito Espinoza"
+        profileSubtitle.text = "Bienvenid@ a El Pollón"
 
         cartItems = Cart.getCartItems()
         cartAdapter = CartAdapter(this, cartItems)
@@ -68,7 +68,7 @@ class CartActivity : AppCompatActivity() {
         for (product in cartItems) {
             total += product.price
         }
-        totalAmount.text = "Total: $" + String.format("%.2f", total)
+        totalAmount.text = "Total: S/" + String.format("%.2f", total)
     }
 
     private fun enviarCompraAFirebase() {
@@ -102,7 +102,7 @@ class CartActivity : AppCompatActivity() {
                     calcularTiempoEstimado(cartItems.size)
                     Cart.clearCart()
                     cartAdapter.notifyDataSetChanged()
-                    totalAmount.text = "Total: $0.00"
+                    totalAmount.text = "Total: S/0.00"
                     startActivity(Intent(this, ConfirmacionActivity::class.java))
                 } else {
                     Toast.makeText(this, "Error al finalizar compra", Toast.LENGTH_SHORT).show()

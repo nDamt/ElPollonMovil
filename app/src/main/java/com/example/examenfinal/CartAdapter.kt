@@ -21,7 +21,7 @@ class CartAdapter(
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val product = cartItems[position]
         holder.productName.text = product.name
-        holder.productPrice.text = "$${String.format("%.2f", product.price)}"
+        holder.productPrice.text = "S/${String.format("%.2f", product.price)}"
         holder.productImage.setImageResource(product.imageResource)
     }
 

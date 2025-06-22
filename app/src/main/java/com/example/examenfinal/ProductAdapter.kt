@@ -25,7 +25,7 @@ class ProductAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList[position]
         holder.productName.text = product.name
-        holder.productPrice.text = "$${product.price}"
+        holder.productPrice.text = "S/${product.price}"
         holder.productImage.setImageResource(product.imageResource)
 
         holder.addToCartButton.setOnClickListener {
