@@ -16,17 +16,16 @@
 
         <!-- Círculo blanco con imagen -->
         <FrameLayout
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="190dp"
+            android:layout_height="190dp"
             android:background="@drawable/circle_white"
             android:layout_gravity="center">
 
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/ic_thumb_up"
-                android:layout_gravity="center"
-                android:tint="#D32F2F" />
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/like"
+                android:layout_gravity="center" />
         </FrameLayout>
     </LinearLayout>
 
@@ -44,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Gracias por tu compra"
-            android:textSize="20sp"
+            android:textSize="30sp"
             android:textColor="#000000"
             android:layout_marginBottom="24dp" />
 
