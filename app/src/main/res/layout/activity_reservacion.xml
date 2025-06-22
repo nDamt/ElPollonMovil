@@ -133,9 +133,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#FFECEC"
-        app:itemIconTint="@color/material_dynamic_secondary20"
-        app:itemTextColor="#000000"
+        android:background="#B71C1C"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
         app:menu="@menu/bottom_navigation_menu" />
 </RelativeLayout>
 
