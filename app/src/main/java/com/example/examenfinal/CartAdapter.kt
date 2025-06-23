@@ -25,6 +25,7 @@ class CartAdapter(
         holder.productName.text = product.name
         holder.productPrice.text = "S/${String.format("%.2f", product.price)}"
         holder.productImage.setImageResource(product.imageResource)
+        holder.productQuantity.text = "Cantidad: ${product.quantity}"
         holder.deleteButton.setOnClickListener {
             onDeleteClick(product)
         }
@@ -38,5 +39,6 @@ class CartAdapter(
         val productName: TextView = itemView.findViewById(R.id.producto_name)
         val productPrice: TextView = itemView.findViewById(R.id.product_price)
         val deleteButton: ImageButton = itemView.findViewById(R.id.delete_product_button)
+        val productQuantity: TextView = itemView.findViewById(R.id.product_quantity)
     }
 }

@@ -44,6 +44,19 @@
             android:textSize="14sp"
             android:textColor="#B71C1C" />
 
+
+        <TextView
+            android:id="@+id/product_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/product_price"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/producto_image"
+            android:text="Cantidad: 1"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
         <ImageButton
             android:id="@+id/delete_product_button"
             android:layout_width="40dp"

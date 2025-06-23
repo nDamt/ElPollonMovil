@@ -54,9 +54,7 @@ class CartActivity : AppCompatActivity() {
 
         cartAdapter = CartAdapter(this, cartItems) { producto ->
             Cart.removeItem(producto)
-            cartItems.remove(producto)
-            cartAdapter.notifyDataSetChanged()
-            calculateAndDisplayTotal()
+            updateCart() // 👈 usamos el método que sincroniza todo y recalcula
             Toast.makeText(this, "${producto.name} fue eliminado del carrito", Toast.LENGTH_SHORT).show()
         }
         recyclerView.adapter = cartAdapter
@@ -74,9 +72,15 @@ class CartActivity : AppCompatActivity() {
     private fun calculateAndDisplayTotal() {
         var total = 0.0
         for (product in cartItems) {
-            total += product.price
+            total += product.price * product.quantity
         }
         totalAmount.text = "Total: S/" + String.format("%.2f", total)
+    }
+    private fun updateCart() {
+        cartItems.clear()
+        cartItems.addAll(Cart.getCartItems())
+        cartAdapter.notifyDataSetChanged()
+        calculateAndDisplayTotal()
     }
 
     private fun enviarCompraAFirebase() {
