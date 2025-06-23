@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -69,6 +70,6 @@ class ProductAdapter(
         val productImage: ImageView = itemView.findViewById(R.id.producto_image)
         val productName: TextView = itemView.findViewById(R.id.producto_name)
         val productPrice: TextView = itemView.findViewById(R.id.product_price)
-        val addToCartButton: ImageButton = itemView.findViewById(R.id.add_to_cart_button)
+        val addToCartButton: Button = itemView.findViewById(R.id.add_to_cart_button)
     }
 }

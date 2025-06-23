@@ -24,7 +24,7 @@ class CartActivity : AppCompatActivity() {
     private lateinit var mDatabase: DatabaseReference
     private lateinit var recyclerView: RecyclerView
     private lateinit var cartAdapter: CartAdapter
-    private lateinit var cartItems: List<Product>
+    private lateinit var cartItems: MutableList<Product>
     private lateinit var profileName: TextView
     private lateinit var profileSubtitle: TextView
     private lateinit var totalAmount: TextView
@@ -50,9 +50,17 @@ class CartActivity : AppCompatActivity() {
         profileName.text = username
         profileSubtitle.text = "Bienvenid@ a El Pollón"
 
-        cartItems = Cart.getCartItems()
-        cartAdapter = CartAdapter(this, cartItems)
+        cartItems = Cart.getCartItems().toMutableList() // Asegúrate que sea mutable
+
+        cartAdapter = CartAdapter(this, cartItems) { producto ->
+            Cart.removeItem(producto)
+            cartItems.remove(producto)
+            cartAdapter.notifyDataSetChanged()
+            calculateAndDisplayTotal()
+            Toast.makeText(this, "${producto.name} fue eliminado del carrito", Toast.LENGTH_SHORT).show()
+        }
         recyclerView.adapter = cartAdapter
+
 
         calculateAndDisplayTotal()
 

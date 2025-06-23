@@ -10,7 +10,9 @@ object Cart {
     fun getCartItems(): List<Product> {
         return cartItems
     }
-
+    fun removeItem(product: Product) {
+        cartItems.remove(product)
+    }
     fun clearCart() {
         cartItems.clear()
     }

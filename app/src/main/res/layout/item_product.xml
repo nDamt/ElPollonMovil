@@ -41,15 +41,15 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp" />
 
-        <ImageButton
+        <Button
             android:id="@+id/add_to_cart_button"
             android:layout_width="wrap_content"
-            android:layout_height="51dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/product_price"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
-            android:alpha="@dimen/material_emphasis_medium"
-            android:contentDescription="@string/add_to_cart_desc"
-            android:src="@drawable/ic_add" />
+            android:text="Agregar"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#B71C1C" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
