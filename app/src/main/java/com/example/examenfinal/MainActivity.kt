@@ -47,29 +47,29 @@ class MainActivity : AppCompatActivity() {
         // ✅ Insertar datos solo si la tabla está vacía
         if (dbHelper.obtenerProductos().isEmpty()) {
             val bebidas = listOf(
-                Product("Café Espresso", 7.00, R.drawable.ic_product, "Bebidas"),
-                Product("Café Americano", 8.00, R.drawable.ic_product, "Bebidas"),
-                Product("Café Latte", 9.50, R.drawable.ic_product, "Bebidas"),
-                Product("Infusión de Manzanilla", 6.00, R.drawable.ic_product, "Bebidas"),
-                Product("Limonada Frozen", 12.00, R.drawable.frio, "Bebidas"),
-                Product("Coca-Cola", 5.00, R.drawable.frio, "Bebidas"),
-                Product("Agua Mineral", 4.00, R.drawable.frio, "Bebidas"),
-                Product("Smoothie de Fresa", 8.50, R.drawable.frio, "Bebidas"),
-                Product("Piña Colada sin Alcohol", 12.00, R.drawable.frio, "Bebidas")
+                Product("Café Espresso", 7.00, R.drawable.cafeespre, "Bebidas"),
+                Product("Café Americano", 8.00, R.drawable.cafeame, "Bebidas"),
+                Product("Café Latte", 9.50, R.drawable.cafelatte, "Bebidas"),
+                Product("Infusión de Manzanilla", 6.00, R.drawable.manzanilla, "Bebidas"),
+                Product("Limonada Frozen", 12.00, R.drawable.limonadafro, "Bebidas"),
+                Product("Coca-Cola", 5.00, R.drawable.cocacola, "Bebidas"),
+                Product("Agua Mineral", 4.00, R.drawable.agua, "Bebidas"),
+                Product("Smoothie de Fresa", 8.50, R.drawable.fresa, "Bebidas"),
+                Product("Piña Colada sin Alcohol", 12.00, R.drawable.pinacola, "Bebidas")
             )
             val parrillas = listOf(
-                Product("Parrilla Mixta", 35.00, R.drawable.comida, "Parrillas"),
-                Product("Costillas BBQ", 32.00, R.drawable.comida, "Parrillas"),
-                Product("Chorizo Parrillero", 14.00, R.drawable.comida, "Parrillas"),
-                Product("Brochetas de Carne", 20.00, R.drawable.comida, "Parrillas"),
-                Product("Asado de Tira", 38.00, R.drawable.comida, "Parrillas")
+                Product("Parrilla Mixta", 35.00, R.drawable.parrillamixta, "Parrillas"),
+                Product("Costillas BBQ", 32.00, R.drawable.costillasbbq, "Parrillas"),
+                Product("Chorizo Parrillero", 14.00, R.drawable.chorizo, "Parrillas"),
+                Product("Brochetas de Carne", 20.00, R.drawable.brochetas, "Parrillas"),
+                Product("Asado de Tira", 38.00, R.drawable.asadodetira, "Parrillas")
             )
             val brasas = listOf(
-                Product("Pollo a la Brasa", 16.00, R.drawable.comida, "Brasas"),
-                Product("Anticuchos", 12.00, R.drawable.comida, "Brasas"),
-                Product("Alitas BBQ", 15.00, R.drawable.comida, "Brasas"),
-                Product("Sandwich de Lomo", 18.00, R.drawable.comida, "Brasas"),
-                Product("Papas Bravas", 9.00, R.drawable.comida, "Brasas")
+                Product("Pollo a la Brasa", 16.00, R.drawable.pollobrasa, "Brasas"),
+                Product("Anticuchos", 12.00, R.drawable.anticucho, "Brasas"),
+                Product("Alitas BBQ", 15.00, R.drawable.alitasbbq, "Brasas"),
+                Product("Sandwich de Lomo", 18.00, R.drawable.sandwich, "Brasas"),
+                Product("Papas Bravas", 9.00, R.drawable.papasbra, "Brasas")
             )
 
             val todosLosProductos = bebidas + parrillas + brasas
