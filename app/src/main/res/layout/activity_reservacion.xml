@@ -97,6 +97,7 @@
                 android:id="@+id/sp_personas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:entries="@array/numero_personas"
                 android:layout_marginBottom="16dp" />
 
             <EditText
