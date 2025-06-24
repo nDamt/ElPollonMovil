@@ -14,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
 class ReservacionActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -35,6 +36,7 @@ class ReservacionActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reservacion)
 
+        // Vincular vistas
         etNombre = findViewById(R.id.et_nombre)
         etFecha = findViewById(R.id.et_fecha)
         etHora = findViewById(R.id.et_hora)
@@ -48,6 +50,7 @@ class ReservacionActivity : AppCompatActivity(), OnMapReadyCallback {
         btnHora.setOnClickListener { showTimePickerDialog() }
         btnConfirmar.setOnClickListener { confirmarReservacion() }
 
+        // Configurar mapa
         mapView = findViewById(R.id.mapView)
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
@@ -56,6 +59,7 @@ class ReservacionActivity : AppCompatActivity(), OnMapReadyCallback {
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
 
+        // Navegación inferior
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = R.id.nav_reservacion
 
@@ -77,11 +81,11 @@ class ReservacionActivity : AppCompatActivity(), OnMapReadyCallback {
                 else -> false
             }
         }
-
     }
+
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        val ubicacionRestaurante = LatLng(-12.105514647511617, -77.05630533841655) // Av. Salaverry con El Ejército
+        val ubicacionRestaurante = LatLng(-12.105514647511617, -77.05630533841655)
         googleMap?.addMarker(MarkerOptions().position(ubicacionRestaurante).title("El Pollón"))
         googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacionRestaurante, 16f))
     }
@@ -119,8 +123,28 @@ class ReservacionActivity : AppCompatActivity(), OnMapReadyCallback {
         if (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(hora) || TextUtils.isEmpty(personas)) {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
         } else {
-            // Aquí puedes agregar lógica para guardar la reservación
-            Toast.makeText(this, "Reservación exitosa", Toast.LENGTH_SHORT).show()
+            val mDatabase = FirebaseDatabase.getInstance().getReference("reservaciones")
+            val reservacionId = mDatabase.push().key
+
+            if (reservacionId != null) {
+                val reservacionData = hashMapOf<String, Any>(
+                    "nombre" to nombre,
+                    "fecha" to fecha,
+                    "hora" to hora,
+                    "personas" to personas,
+                    "notas" to notas,
+                    "timestamp" to System.currentTimeMillis()
+                )
+
+                mDatabase.child(reservacionId).setValue(reservacionData).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Reservación guardada exitosamente 🎉", Toast.LENGTH_SHORT).show()
+                        finish()
+                    } else {
+                        Toast.makeText(this, "Error al guardar la reservación", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 

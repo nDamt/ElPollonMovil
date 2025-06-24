@@ -1,6 +1,7 @@
 package com.example.examenfinal
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
@@ -83,7 +84,10 @@ class EditProfileActivity : AppCompatActivity() {
             databaseHelper.updateUser(username, firstName, lastName, password, phone, address, email)
 
             Toast.makeText(this, "Datos actualizados correctamente", Toast.LENGTH_SHORT).show()
-            loadUserData()
+
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }
