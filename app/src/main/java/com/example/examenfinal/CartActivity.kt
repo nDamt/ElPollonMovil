@@ -15,9 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class CartActivity : AppCompatActivity() {
 
@@ -50,15 +47,14 @@ class CartActivity : AppCompatActivity() {
         profileName.text = username
         profileSubtitle.text = "Bienvenid@ a El Pollón"
 
-        cartItems = Cart.getCartItems().toMutableList() // Asegúrate que sea mutable
+        cartItems = Cart.getCartItems().toMutableList()
 
         cartAdapter = CartAdapter(this, cartItems) { producto ->
             Cart.removeItem(producto)
-            updateCart() // 👈 usamos el método que sincroniza todo y recalcula
+            updateCart()
             Toast.makeText(this, "${producto.name} fue eliminado del carrito", Toast.LENGTH_SHORT).show()
         }
         recyclerView.adapter = cartAdapter
-
 
         calculateAndDisplayTotal()
 
@@ -76,6 +72,7 @@ class CartActivity : AppCompatActivity() {
         }
         totalAmount.text = "Total: S/" + String.format("%.2f", total)
     }
+
     private fun updateCart() {
         cartItems.clear()
         cartItems.addAll(Cart.getCartItems())
@@ -112,11 +109,15 @@ class CartActivity : AppCompatActivity() {
             mDatabase.child(compraId).setValue(compraData).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Compra finalizada con éxito", Toast.LENGTH_SHORT).show()
-                    calcularTiempoEstimado(cartItems.size)
+
+                    // 👉 PASA LA CANTIDAD DE PRODUCTOS A LA ACTIVITY DE CONFIRMACIÓN
+                    val intent = Intent(this, ConfirmacionActivity::class.java)
+                    intent.putExtra("cantidad_productos", cartItems.size)
                     Cart.clearCart()
                     cartAdapter.notifyDataSetChanged()
                     totalAmount.text = "Total: S/0.00"
-                    startActivity(Intent(this, ConfirmacionActivity::class.java))
+                    startActivity(intent)
+                    finish()
                 } else {
                     Toast.makeText(this, "Error al finalizar compra", Toast.LENGTH_SHORT).show()
                 }
@@ -124,31 +125,6 @@ class CartActivity : AppCompatActivity() {
         } else {
             Log.e("Firebase", "Error generando el ID de la compra")
         }
-    }
-
-    private fun calcularTiempoEstimado(cantidadProductos: Int) {
-        val apiService = ApiClient.getRetrofitInstance().create(HuggingFaceApiService::class.java)
-
-        val data = hashMapOf("cantidad_productos" to cantidadProductos)
-
-        val call = apiService.predict(data)
-        call.enqueue(object : Callback<Map<String, Any>> {
-            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
-                if (response.isSuccessful && response.body() != null) {
-                    val result = response.body()!!
-                    val tiempoEstimado = result["tiempo_estimado"] as? Double
-                    Toast.makeText(this@CartActivity, "Tiempo estimado de espera: $tiempoEstimado minutos", Toast.LENGTH_LONG).show()
-                } else {
-                    Log.e("API", "Error en la respuesta - Código: ${response.code()}, Cuerpo: ${response.errorBody()}")
-                    Toast.makeText(this@CartActivity, "Error en la respuesta de la API", Toast.LENGTH_LONG).show()
-                }
-            }
-
-            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
-                Log.e("API", "Error en la solicitud: ${t.message}")
-                Toast.makeText(this@CartActivity, "Error en la solicitud: ${t.message}", Toast.LENGTH_LONG).show()
-            }
-        })
     }
 
     private fun setupBottomNavigation() {
