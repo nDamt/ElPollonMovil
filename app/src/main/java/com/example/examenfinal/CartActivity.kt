@@ -100,7 +100,8 @@ class CartActivity : AppCompatActivity() {
                 val productoData = hashMapOf<String, Any>(
                     "name" to product.name,
                     "price" to product.price,
-                    "category" to product.category
+                    "category" to product.category,
+                    "cantidad" to product.quantity
                 )
                 productosList.add(productoData)
             }
