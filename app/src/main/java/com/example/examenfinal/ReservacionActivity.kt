@@ -7,10 +7,16 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
-class ReservacionActivity : AppCompatActivity() {
+class ReservacionActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var etNombre: EditText
     private lateinit var etFecha: EditText
@@ -20,6 +26,10 @@ class ReservacionActivity : AppCompatActivity() {
     private lateinit var btnFecha: Button
     private lateinit var btnHora: Button
     private lateinit var btnConfirmar: Button
+    private lateinit var mapView: MapView
+    private var googleMap: GoogleMap? = null
+
+    private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +47,14 @@ class ReservacionActivity : AppCompatActivity() {
         btnFecha.setOnClickListener { showDatePickerDialog() }
         btnHora.setOnClickListener { showTimePickerDialog() }
         btnConfirmar.setOnClickListener { confirmarReservacion() }
+
+        mapView = findViewById(R.id.mapView)
+        var mapViewBundle: Bundle? = null
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
+        }
+        mapView.onCreate(mapViewBundle)
+        mapView.getMapAsync(this)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = R.id.nav_reservacion
@@ -59,6 +77,13 @@ class ReservacionActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+    }
+    override fun onMapReady(map: GoogleMap) {
+        googleMap = map
+        val ubicacionRestaurante = LatLng(-12.105514647511617, -77.05630533841655) // Av. Salaverry con El Ejército
+        googleMap?.addMarker(MarkerOptions().position(ubicacionRestaurante).title("El Pollón"))
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacionRestaurante, 16f))
     }
 
     private fun showDatePickerDialog() {
@@ -97,5 +122,46 @@ class ReservacionActivity : AppCompatActivity() {
             // Aquí puedes agregar lógica para guardar la reservación
             Toast.makeText(this, "Reservación exitosa", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    // MapView lifecycle
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView.onStop()
+    }
+
+    override fun onPause() {
+        mapView.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mapView.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
+        if (mapViewBundle == null) {
+            mapViewBundle = Bundle()
+            outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle)
+        }
+        mapView.onSaveInstanceState(mapViewBundle)
     }
 }
