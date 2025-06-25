@@ -29,6 +29,7 @@
         <activity android:name=".ReservacionActivity"/>
         <activity android:name=".ConfirmacionActivity"/>
         <activity android:name=".EditProfileActivity"/>
+        <activity android:name=".LocalesActivity" />
         <activity
             android:name=".InicioActivity"
             android:exported="true" >
