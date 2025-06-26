@@ -3,36 +3,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F9F9F9"
     tools:context=".LoginActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:gravity="center"
+            android:padding="32dp">
 
-            <!-- Logo -->
-            <ImageView
-                android:id="@+id/logoImage"
-                android:layout_width="240dp"
-                android:layout_height="180dp"
-                android:layout_marginBottom="32dp"
-                android:contentDescription="@string/logo_desc"
-                android:scaleType="centerInside"
-                android:src="@drawable/logo" />
+            <!-- Logo circular -->
+            <FrameLayout
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/circle_background"
+                android:elevation="4dp">
+
+                <ImageView
+                    android:id="@+id/logoImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    android:padding="2dp"
+                    android:src="@drawable/logo"
+                    android:contentDescription="@string/logo_desc" />
+            </FrameLayout>
 
             <!-- Usuario -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                app:boxBackgroundMode="outline"
                 android:hint="Usuario">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -48,7 +57,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:hint="Contraseña"
-                app:endIconMode="password_toggle">
+                app:endIconMode="password_toggle"
+                app:boxBackgroundMode="outline">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
@@ -58,14 +68,16 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Botón de inicio -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/loginButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="#B71C1C"
+                android:layout_marginBottom="20dp"
                 android:text="Iniciar Sesión"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                app:cornerRadius="12dp"
+                android:backgroundTint="#B71C1C" />
 
             <!-- Texto para registro -->
             <TextView
@@ -74,8 +86,12 @@
                 android:layout_height="wrap_content"
                 android:text="¿No tienes una cuenta? Regístrate"
                 android:textColor="#B71C1C"
-                android:textSize="16sp" />
+                android:textSize="14sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp" />
 
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
+
+
