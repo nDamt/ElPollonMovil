@@ -3,6 +3,7 @@ package com.example.examenfinal
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.widget.TextView
@@ -19,7 +20,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -34,7 +41,6 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
         Pair("Sucursal Los Olivos", LatLng(-12.0157670148087, -77.05966105871059)),
         Pair("Sucursal Magdalena", LatLng(-12.101275985708028, -77.0561040923204)),
         Pair("Sucursal San Miguel", LatLng(-12.07075226169906, -77.16414713919714)),
-        Pair("Sucursal Santa Anita", LatLng(-12.012290361102261, -76.98794016670966)),
         Pair("Sucursal Breña", LatLng(-12.04154, -77.03717)),
         Pair("Sucursal Surco", LatLng(-12.13282, -76.99138))
     )
@@ -115,10 +121,47 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 localMasCercano?.let {
                     distanciaText.text = "📍 Local más cercano: ${it.first} - %.2f km".format(menorDistancia)
+                    trazarRuta(it.second)
                 }
             }
         }
     }
+
+    private fun trazarRuta(destino: LatLng) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.openrouteservice.org/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ORSService::class.java)
+
+        val origen = miUbicacion!!
+        val req = RouteRequest(
+            listOf(
+                listOf(origen.longitude, origen.latitude),
+                listOf(destino.longitude, destino.latitude)
+            )
+        )
+
+        service.getRoute(req).enqueue(object : Callback<ORSResponse> {
+            override fun onResponse(call: Call<ORSResponse>, response: Response<ORSResponse>) {
+                response.body()?.features?.get(0)?.geometry?.coordinates?.let { coords ->
+                    val path = coords.map { LatLng(it[1], it[0]) }
+                    mMap.addPolyline(
+                        PolylineOptions()
+                            .addAll(path)
+                            .color(Color.BLUE)
+                            .width(6f)
+                    )
+                }
+            }
+
+            override fun onFailure(call: Call<ORSResponse>, t: Throwable) {
+                Toast.makeText(this@LocalesActivity, "Error en ruta: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 
     private fun calcularDistancia(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Float {
         val loc1 = Location("").apply { latitude = lat1; longitude = lon1 }
