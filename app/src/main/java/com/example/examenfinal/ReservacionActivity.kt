@@ -78,6 +78,10 @@ class ReservacionActivity : AppCompatActivity(), OnMapReadyCallback {
                     true
                 }
                 R.id.nav_reservacion -> true // ya estamos aquí
+                R.id.nav_locales -> {
+                    startActivity(Intent(this, LocalesActivity::class.java))
+                    true
+                }
                 else -> false
             }
         }

@@ -61,6 +61,10 @@ class ProfileActivity : AppCompatActivity() {
                     startActivity(Intent(this, ReservacionActivity::class.java))
                     true
                 }
+                R.id.nav_locales -> {
+                    startActivity(Intent(this, LocalesActivity::class.java))
+                    true
+                }
                 else -> false
             }
         }
