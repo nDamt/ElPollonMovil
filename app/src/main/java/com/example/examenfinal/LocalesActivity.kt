@@ -16,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -24,16 +25,17 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var distanciaText: TextView
+    private var miUbicacion: LatLng? = null
 
     private val PERMISSION_REQUEST_LOCATION = 1
 
     private val locales = listOf(
-        LatLng(-12.04318, -77.02824), // Lima Centro
-        LatLng(-12.12108, -77.02947), // San Isidro
-        LatLng(-12.09649, -77.03518), // Miraflores
-        LatLng(-12.07774, -77.05594), // Pueblo Libre
-        LatLng(-12.04154, -77.03717), // Breña
-        LatLng(-12.13282, -76.99138)  // Surco
+        Pair("Sucursal Los Olivos", LatLng(-12.0157670148087, -77.05966105871059)),
+        Pair("Sucursal Magdalena", LatLng(-12.101275985708028, -77.0561040923204)),
+        Pair("Sucursal San Miguel", LatLng(-12.07075226169906, -77.16414713919714)),
+        Pair("Sucursal Santa Anita", LatLng(-12.012290361102261, -76.98794016670966)),
+        Pair("Sucursal Breña", LatLng(-12.04154, -77.03717)),
+        Pair("Sucursal Surco", LatLng(-12.13282, -76.99138))
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,18 +55,33 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Centrar el mapa en Lima inicialmente
         val lima = LatLng(-12.0464, -77.0428)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lima, 12f))
 
-        // Mostrar los marcadores de locales
-        for ((index, local) in locales.withIndex()) {
-            mMap.addMarker(MarkerOptions().position(local).title("Local ${index + 1}"))
+        for ((nombre, local) in locales) {
+            mMap.addMarker(MarkerOptions().position(local).title(nombre))
         }
 
-        // Verificar permisos
+        mMap.setOnMarkerClickListener { marker ->
+            if (marker.title != "Tú" && miUbicacion != null) {
+                val distancia = calcularDistancia(
+                    miUbicacion!!.latitude,
+                    miUbicacion!!.longitude,
+                    marker.position.latitude,
+                    marker.position.longitude
+                )
+                Toast.makeText(
+                    this,
+                    "Distancia a ${marker.title}: %.2f km".format(distancia),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            false // para que igual muestre el info window
+        }
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -76,34 +93,28 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.isMyLocationEnabled = true
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            if (location == null) {
-                Toast.makeText(this, "No se pudo obtener tu ubicación", Toast.LENGTH_LONG).show()
-                return@addOnSuccessListener
-            }
+            location?.let {
+                miUbicacion = LatLng(it.latitude, it.longitude)
+                mMap.addMarker(MarkerOptions().position(miUbicacion!!).title("Tú"))
 
-            val miUbicacion = LatLng(location.latitude, location.longitude)
-            mMap.addMarker(MarkerOptions().position(miUbicacion).title("Tú"))
+                var localMasCercano: Pair<String, LatLng>? = null
+                var menorDistancia = Float.MAX_VALUE
 
-            var localMasCercano: LatLng? = null
-            var menorDistancia = Float.MAX_VALUE
+                for ((nombre, local) in locales) {
+                    val distancia = calcularDistancia(
+                        it.latitude, it.longitude,
+                        local.latitude, local.longitude
+                    )
+                    if (distancia < menorDistancia) {
+                        menorDistancia = distancia
+                        localMasCercano = Pair(nombre, local)
+                    }
+                }
 
-            for (local in locales) {
-                val distancia = calcularDistancia(
-                    location.latitude, location.longitude,
-                    local.latitude, local.longitude
-                )
-                if (distancia < menorDistancia) {
-                    menorDistancia = distancia
-                    localMasCercano = local
+                localMasCercano?.let {
+                    distanciaText.text = "📍 Local más cercano: ${it.first} - %.2f km".format(menorDistancia)
                 }
             }
-
-            localMasCercano?.let {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 13f))
-                distanciaText.text = "📍 Local más cercano: %.2f km".format(menorDistancia)
-            }
-        }.addOnFailureListener {
-            Toast.makeText(this, "Error al obtener la ubicación", Toast.LENGTH_SHORT).show()
         }
     }
 
