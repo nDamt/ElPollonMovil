@@ -4,10 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.TextUtils
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 class EditProfileActivity : AppCompatActivity() {
@@ -21,6 +18,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var editProfileEmail: EditText
     private lateinit var saveProfileButton: Button
     private lateinit var databaseHelper: DatabaseHelper
+    private lateinit var originalUsername: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +34,6 @@ class EditProfileActivity : AppCompatActivity() {
         saveProfileButton = findViewById(R.id.save_profile_button)
 
         databaseHelper = DatabaseHelper(this)
-
         loadUserData()
 
         saveProfileButton.setOnClickListener {
@@ -46,9 +43,10 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun loadUserData() {
         val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        originalUsername = sharedPreferences.getString("username", "") ?: ""
         editProfileName.setText(sharedPreferences.getString("firstName", ""))
         editProfileLastName.setText(sharedPreferences.getString("lastName", ""))
-        editProfileUsername.setText(sharedPreferences.getString("username", ""))
+        editProfileUsername.setText(originalUsername)
         editProfilePassword.setText(sharedPreferences.getString("password", ""))
         editProfilePhone.setText(sharedPreferences.getString("phone", ""))
         editProfileAddress.setText(sharedPreferences.getString("address", ""))
@@ -65,8 +63,7 @@ class EditProfileActivity : AppCompatActivity() {
         val email = editProfileEmail.text.toString().trim()
 
         if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty() ||
-            password.isEmpty() || phone.isEmpty() || address.isEmpty() || email.isEmpty()
-        ) {
+            password.isEmpty() || phone.isEmpty() || address.isEmpty() || email.isEmpty()) {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
         } else {
             val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
@@ -81,13 +78,25 @@ class EditProfileActivity : AppCompatActivity() {
                 apply()
             }
 
-            databaseHelper.updateUser(username, firstName, lastName, password, phone, address, email)
+            val updated = databaseHelper.updateUserByUsername(
+                originalUsername,
+                username,
+                firstName,
+                lastName,
+                password,
+                phone,
+                address,
+                email
+            )
 
-            Toast.makeText(this, "Datos actualizados correctamente", Toast.LENGTH_SHORT).show()
-
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
-            finish()
+            if (updated) {
+                Toast.makeText(this, "Datos actualizados correctamente", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, ProfileActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(this, "Error al actualizar en la base de datos", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

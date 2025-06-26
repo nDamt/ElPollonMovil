@@ -83,6 +83,31 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         return db.update("users", values, "username = ?", arrayOf(username))
     }
 
+    // ✅ Nuevo método para actualizar incluso si cambia el username
+    fun updateUserByUsername(
+        originalUsername: String,
+        newUsername: String,
+        firstName: String,
+        lastName: String,
+        password: String,
+        phone: String,
+        address: String,
+        email: String
+    ): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put("firstName", firstName)
+            put("lastName", lastName)
+            put("username", newUsername)
+            put("password", password)
+            put("phone", phone)
+            put("address", address)
+            put("email", email)
+        }
+        val rows = db.update("users", values, "username = ?", arrayOf(originalUsername))
+        return rows > 0
+    }
+
     companion object {
         private const val DATABASE_NAME = "pollon.db"
         private const val DATABASE_VERSION = 1
