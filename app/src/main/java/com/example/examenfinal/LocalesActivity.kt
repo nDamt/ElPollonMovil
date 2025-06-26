@@ -15,6 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -95,7 +96,8 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             location?.let {
                 miUbicacion = LatLng(it.latitude, it.longitude)
-                mMap.addMarker(MarkerOptions().position(miUbicacion!!).title("Tú"))
+                mMap.addMarker(MarkerOptions().position(miUbicacion!!).title("Tú")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
 
                 var localMasCercano: Pair<String, LatLng>? = null
                 var menorDistancia = Float.MAX_VALUE
