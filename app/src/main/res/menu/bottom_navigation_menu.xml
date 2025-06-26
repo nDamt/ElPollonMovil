@@ -9,6 +9,10 @@
         android:icon="@drawable/ic_cart"
         android:title="Carrito" />
     <item
+        android:id="@+id/nav_locales"
+        android:icon="@drawable/ic_local"
+        android:title="Locales" />
+    <item
         android:id="@+id/nav_reservacion"
         android:icon="@drawable/ic_reservacion"
         android:title="Reservar" />
@@ -16,9 +20,4 @@
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_profile"
         android:title="Perfil" />
-    <item
-        android:id="@+id/nav_locales"
-        android:title="Locales"
-        android:icon="@drawable/ic_local" />
-
 </menu>

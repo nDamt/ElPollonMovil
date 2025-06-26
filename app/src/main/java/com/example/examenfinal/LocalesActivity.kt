@@ -27,14 +27,13 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val PERMISSION_REQUEST_LOCATION = 1
 
-    // 6 locales en Lima
     private val locales = listOf(
         LatLng(-12.04318, -77.02824), // Lima Centro
         LatLng(-12.12108, -77.02947), // San Isidro
         LatLng(-12.09649, -77.03518), // Miraflores
         LatLng(-12.07774, -77.05594), // Pueblo Libre
         LatLng(-12.04154, -77.03717), // Breña
-        LatLng(-12.13282, -76.99138), // Surco
+        LatLng(-12.13282, -76.99138)  // Surco
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,20 +53,18 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Centra el mapa en Lima al iniciar
-        val limaCentro = LatLng(-12.0464, -77.0428)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(limaCentro, 12f))
+        // Centrar el mapa en Lima inicialmente
+        val lima = LatLng(-12.0464, -77.0428)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lima, 12f))
 
-        // Añade marcadores de los locales
+        // Mostrar los marcadores de locales
         for ((index, local) in locales.withIndex()) {
             mMap.addMarker(MarkerOptions().position(local).title("Local ${index + 1}"))
         }
 
-        // Solicita permisos
-        if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        // Verificar permisos
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -78,37 +75,39 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap.isMyLocationEnabled = true
 
-        // Muestra tu ubicación
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            location?.let {
-                val miUbicacion = LatLng(it.latitude, it.longitude)
-                mMap.addMarker(MarkerOptions().position(miUbicacion).title("Tú"))
+            if (location == null) {
+                Toast.makeText(this, "No se pudo obtener tu ubicación", Toast.LENGTH_LONG).show()
+                return@addOnSuccessListener
+            }
 
-                var localMasCercano: LatLng? = null
-                var menorDistancia = Float.MAX_VALUE
+            val miUbicacion = LatLng(location.latitude, location.longitude)
+            mMap.addMarker(MarkerOptions().position(miUbicacion).title("Tú"))
 
-                for (local in locales) {
-                    val distancia = calcularDistancia(
-                        it.latitude, it.longitude,
-                        local.latitude, local.longitude
-                    )
-                    if (distancia < menorDistancia) {
-                        menorDistancia = distancia
-                        localMasCercano = local
-                    }
-                }
+            var localMasCercano: LatLng? = null
+            var menorDistancia = Float.MAX_VALUE
 
-                localMasCercano?.let {
-                    distanciaText.text = "📍 Local más cercano: %.2f km".format(menorDistancia)
+            for (local in locales) {
+                val distancia = calcularDistancia(
+                    location.latitude, location.longitude,
+                    local.latitude, local.longitude
+                )
+                if (distancia < menorDistancia) {
+                    menorDistancia = distancia
+                    localMasCercano = local
                 }
             }
+
+            localMasCercano?.let {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 13f))
+                distanciaText.text = "📍 Local más cercano: %.2f km".format(menorDistancia)
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Error al obtener la ubicación", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun calcularDistancia(
-        lat1: Double, lon1: Double,
-        lat2: Double, lon2: Double
-    ): Float {
+    private fun calcularDistancia(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Float {
         val loc1 = Location("").apply { latitude = lat1; longitude = lon1 }
         val loc2 = Location("").apply { latitude = lat2; longitude = lon2 }
         return loc1.distanceTo(loc2) / 1000f
@@ -121,7 +120,8 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_LOCATION &&
-            grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
             recreate()
         } else {
@@ -131,7 +131,7 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        bottomNav.selectedItemId = R.id.nav_locales // ← asegúrate de tener este item en tu menú
+        bottomNav.selectedItemId = R.id.nav_locales
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -143,12 +143,12 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
                     startActivity(Intent(this, CartActivity::class.java))
                     true
                 }
-                R.id.nav_profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
-                    true
-                }
                 R.id.nav_reservacion -> {
                     startActivity(Intent(this, ReservacionActivity::class.java))
+                    true
+                }
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
                     true
                 }
                 R.id.nav_locales -> true
