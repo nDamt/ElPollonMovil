@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 class CartAdapter(
     private val context: Context,
     private val cartItems: List<Product>,
-    private val onDeleteClick: (Product) -> Unit
+    private val onDeleteClick: (Product) -> Unit,
+    private val onQuantityChanged: () -> Unit
 ) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
@@ -26,10 +27,24 @@ class CartAdapter(
         holder.productPrice.text = "S/${String.format("%.2f", product.price)}"
         holder.productImage.setImageResource(product.imageResource)
         holder.productQuantity.text = "Cantidad: ${product.quantity}"
+
         holder.deleteButton.setOnClickListener {
             onDeleteClick(product)
         }
 
+        holder.btnSumar.setOnClickListener {
+            product.quantity++
+            holder.productQuantity.text = "Cantidad: ${product.quantity}"
+            onQuantityChanged()
+        }
+
+        holder.btnRestar.setOnClickListener {
+            if (product.quantity > 1) {
+                product.quantity--
+                holder.productQuantity.text = "Cantidad: ${product.quantity}"
+                onQuantityChanged()
+            }
+        }
     }
 
     override fun getItemCount(): Int = cartItems.size
@@ -40,5 +55,7 @@ class CartAdapter(
         val productPrice: TextView = itemView.findViewById(R.id.product_price)
         val deleteButton: ImageButton = itemView.findViewById(R.id.delete_product_button)
         val productQuantity: TextView = itemView.findViewById(R.id.product_quantity)
+        val btnSumar: ImageButton = itemView.findViewById(R.id.button_increase)
+        val btnRestar: ImageButton = itemView.findViewById(R.id.button_decrease)
     }
 }

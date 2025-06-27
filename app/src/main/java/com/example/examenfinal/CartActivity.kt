@@ -49,11 +49,19 @@ class CartActivity : AppCompatActivity() {
 
         cartItems = Cart.getCartItems().toMutableList()
 
-        cartAdapter = CartAdapter(this, cartItems) { producto ->
-            Cart.removeItem(producto)
-            updateCart()
-            Toast.makeText(this, "${producto.name} fue eliminado del carrito", Toast.LENGTH_SHORT).show()
-        }
+        cartAdapter = CartAdapter(
+            this,
+            cartItems,
+            onDeleteClick = { producto ->
+                Cart.removeItem(producto)
+                updateCart()
+                Toast.makeText(this, "${producto.name} fue eliminado del carrito", Toast.LENGTH_SHORT).show()
+            },
+            onQuantityChanged = {
+                calculateAndDisplayTotal()
+            }
+        )
+
         recyclerView.adapter = cartAdapter
 
         calculateAndDisplayTotal()
@@ -93,7 +101,7 @@ class CartActivity : AppCompatActivity() {
             val productosList = mutableListOf<Map<String, Any>>()
 
             for (product in cartItems) {
-                total += product.price
+                total += product.price * product.quantity
                 val productoData = hashMapOf<String, Any>(
                     "name" to product.name,
                     "price" to product.price,
@@ -109,8 +117,6 @@ class CartActivity : AppCompatActivity() {
             mDatabase.child(compraId).setValue(compraData).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Compra finalizada con éxito", Toast.LENGTH_SHORT).show()
-
-                    // 👉 PASA LA CANTIDAD DE PRODUCTOS A LA ACTIVITY DE CONFIRMACIÓN
                     val intent = Intent(this, ConfirmacionActivity::class.java)
                     intent.putExtra("cantidad_productos", cartItems.size)
                     Cart.clearCart()
