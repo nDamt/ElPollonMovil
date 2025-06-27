@@ -16,11 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,6 +30,7 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var distanciaText: TextView
     private var miUbicacion: LatLng? = null
+    private var rutaActual: Polyline? = null
 
     private val PERMISSION_REQUEST_LOCATION = 1
 
@@ -61,7 +58,6 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
         val lima = LatLng(-12.0464, -77.0428)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lima, 12f))
 
@@ -77,13 +73,10 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
                     marker.position.latitude,
                     marker.position.longitude
                 )
-                Toast.makeText(
-                    this,
-                    "Distancia a ${marker.title}: %.2f km".format(distancia),
-                    Toast.LENGTH_LONG
-                ).show()
+                distanciaText.text = "📍 Ruta a ${marker.title} - %.2f km".format(distancia)
+                trazarRuta(marker.position)
             }
-            false // para que igual muestre el info window
+            false
         }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -102,8 +95,11 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             location?.let {
                 miUbicacion = LatLng(it.latitude, it.longitude)
-                mMap.addMarker(MarkerOptions().position(miUbicacion!!).title("Tú")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+
+                mMap.addMarker(
+                    MarkerOptions().position(miUbicacion!!).title("Tú")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                )
 
                 var localMasCercano: Pair<String, LatLng>? = null
                 var menorDistancia = Float.MAX_VALUE
@@ -135,7 +131,7 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val service = retrofit.create(ORSService::class.java)
 
-        val origen = miUbicacion!!
+        val origen = miUbicacion ?: return
         val req = RouteRequest(
             listOf(
                 listOf(origen.longitude, origen.latitude),
@@ -147,7 +143,12 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onResponse(call: Call<ORSResponse>, response: Response<ORSResponse>) {
                 response.body()?.features?.get(0)?.geometry?.coordinates?.let { coords ->
                     val path = coords.map { LatLng(it[1], it[0]) }
-                    mMap.addPolyline(
+
+                    // Elimina la ruta anterior
+                    rutaActual?.remove()
+
+                    // Dibuja nueva ruta
+                    rutaActual = mMap.addPolyline(
                         PolylineOptions()
                             .addAll(path)
                             .color(Color.BLUE)
@@ -161,7 +162,6 @@ class LocalesActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
     }
-
 
     private fun calcularDistancia(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Float {
         val loc1 = Location("").apply { latitude = lat1; longitude = lon1 }
