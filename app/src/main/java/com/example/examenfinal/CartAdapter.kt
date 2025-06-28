@@ -26,7 +26,7 @@ class CartAdapter(
         holder.productName.text = product.name
         holder.productPrice.text = "S/${String.format("%.2f", product.price)}"
         holder.productImage.setImageResource(product.imageResource)
-        holder.productQuantity.text = "Cantidad: ${product.quantity}"
+        holder.productQuantity.text = "${product.quantity}"
 
         holder.deleteButton.setOnClickListener {
             onDeleteClick(product)
@@ -34,14 +34,14 @@ class CartAdapter(
 
         holder.btnSumar.setOnClickListener {
             product.quantity++
-            holder.productQuantity.text = "Cantidad: ${product.quantity}"
+            holder.productQuantity.text = "${product.quantity}"
             onQuantityChanged()
         }
 
         holder.btnRestar.setOnClickListener {
             if (product.quantity > 1) {
                 product.quantity--
-                holder.productQuantity.text = "Cantidad: ${product.quantity}"
+                holder.productQuantity.text = "${product.quantity}"
                 onQuantityChanged()
             }
         }
