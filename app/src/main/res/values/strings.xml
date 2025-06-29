@@ -22,4 +22,13 @@
         <item>10 Personas</item>
         <item>11 Personas</item>
     </string-array>
+
+    <string-array name="nombres_sucursales">
+        <item>Sucursal Los Olivos</item>
+        <item>Sucursal Magdalena</item>
+        <item>Sucursal San Miguel</item>
+        <item>Sucursal Breña</item>
+        <item>Sucursal Surco</item>
+    </string-array>
+
 </resources>

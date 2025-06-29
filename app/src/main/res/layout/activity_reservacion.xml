@@ -109,6 +109,14 @@
                 android:background="@drawable/edittext_border"
                 android:layout_marginBottom="16dp" />
 
+            <!--  NUEVO: selector de sucursal -->
+            <Spinner
+                android:id="@+id/sp_sucursal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/nombres_sucursales"
+                android:layout_marginBottom="16dp" />
+
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapView"
                 android:layout_width="match_parent"
