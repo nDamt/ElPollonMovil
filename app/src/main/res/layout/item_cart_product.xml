@@ -65,7 +65,7 @@
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_resta"
+                android:src="@drawable/ic_minus"
                 android:scaleType="centerInside"
                 android:contentDescription="Quitar" />
 
@@ -85,7 +85,7 @@
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_suma"
+                android:src="@drawable/ic_add"
                 android:scaleType="centerInside"
                 android:contentDescription="Agregar" />
         </LinearLayout>
