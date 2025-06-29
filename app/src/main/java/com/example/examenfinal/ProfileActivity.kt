@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import android.text.method.PasswordTransformationMethod
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ProfileActivity : AppCompatActivity() {
@@ -81,6 +82,7 @@ class ProfileActivity : AppCompatActivity() {
         profileLastName.text = sharedPreferences.getString("lastName", "N/A")
         profileUsername.text = sharedPreferences.getString("username", "N/A")
         profilePassword.text = sharedPreferences.getString("password", "N/A")
+        profilePassword.transformationMethod = android.text.method.PasswordTransformationMethod.getInstance()
         profilePhone.text = sharedPreferences.getString("phone", "N/A")
         profileAddress.text = sharedPreferences.getString("address", "N/A")
         profileEmail.text = sharedPreferences.getString("email", "N/A")
