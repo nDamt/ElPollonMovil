@@ -15,3 +15,6 @@ El Pollon is a native Android app designed for managing and ordering chicken. It
 **Backend & Database:** Firebase
 
 **Tools:** Figma, Git
+
+## Features
+
